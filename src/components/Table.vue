@@ -1,5 +1,15 @@
 <template>
   <h1>Table</h1>
+  <!-- Filter -->
+  <table>
+    <select v-model="selectedValue">
+        <option value="1">Extract</option>
+        <option value="2">Send</option>
+        <option value="3">Post</option>
+    </select>
+  </table>
+
+  <!-- Data List Table -->
   <table>
     <thead>
         <tr style="background-color: gray;">
@@ -22,7 +32,6 @@
         </tr>
     </tbody>
   </table>
-  <!-- <p v-for="list in getData" :key="list.key">{{ list }}</p> -->
 </template>
 
 <script>
@@ -32,13 +41,15 @@ export default {
     name:'Table',
     data(){
         return{
-            getData:null,
+            getData:[],
+            selectedValue:'',
+            // Table 생성을 위한 Table column list
             columns:['key','agent','type','name','lag','last processed time','status','code','message','start time','elapsed time']
         }
     },
     methods:{
         // axiox 를 통한 데이터 불러오기
-        data(){
+        fetchData(){
             axios.get('https://86927d7e-6241-470a-b535-508d30a31fa9.mock.pstmn.io/list')
             .then(result => {
                 this.getData = result.data.data;
@@ -46,10 +57,10 @@ export default {
             .catch(error => {
                 console.error(error);
             });
-        }
+        },
     },
     created() {
-    this.data();
+    this.fetchData();
   }
 
 }
