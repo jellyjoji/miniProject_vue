@@ -7,7 +7,6 @@
             {{ module.name }}
         </option>
     </select>
-    <span>{{ selectedModule }} 선택</span>
 
     <!-- status filter -->
     <select v-model="selectedStatus">
@@ -15,7 +14,6 @@
             {{ status.name }}
         </option>
     </select>
-    <span>{{ selectedStatus }} 선택</span>
 
     <!-- lag filter -->
     <select v-model="selectedLag" >
@@ -23,7 +21,9 @@
             {{ lag.name }}
         </option>
     </select>
-    <span>{{ selectedLag }} 선택</span>
+
+    <!-- 선택된 filter 값을 출력 -->
+    <span> 필터 : {{ selectedModule }} {{ selectedStatus }} {{ selectedLag }} </span>
 
   <!-- Data List Table -->
   <table>
@@ -41,7 +41,7 @@
             <td>{{ list.name }}</td>
             <!-- state 와 data 의 값이 null 인 경우를 대비하여 .? 옵셔널 체이닝 적용 -->
             <td>{{ list?.state?.data?.lag }}</td>
-            <td>{{ list?.state?.data.last_processed_time }}</td>
+            <td>{{ list?.state?.data?.last_processed_time }}</td>
             <td>{{ list?.state?.status }}</td>
             <td>{{ list?.state?.code }}</td>
             <td>{{ list?.state?.message }}</td>
@@ -61,7 +61,6 @@ export default {
         return{
             getData:[],
             // Table 생성을 위한 Table column list
-            // columns:['key','agent','type','name','lag','status','code','message','start time','elapsed time'],
             columns:['key','agent','type','name','lag','last processed time','status','code','message','start time','elapsed time'],
             
             // filter 선택지
@@ -94,9 +93,7 @@ export default {
     methods:{
         // axiox 를 통한 데이터 불러오기
         fetchData(){
-            // data 5초마다 갱신 : setInterval 5000
             setInterval(() => {
-
             axios.get('http://172.16.0.60:38080/api/open/module/list',{
             headers: {
                         'Authorization': 'Bearer dGVzdG1hbmFnZXI=',
@@ -111,12 +108,8 @@ export default {
             });
             
             console.log("데이터가 5초마다 갱신되고 있습니다");
-            // this.filteredData = this.getData.filter(list => list.type === this.selectedModule);
-            // this.filteredData = this.getData.filter(list => list.state.status === this.selectedStatus);
-            // this.filteredData = this.getData.filter(list => list.state.data.lag === this.selectedLag);
 
-
-            }, 1000); // Execute every 5 second
+            }, 3000); // 데이터는 5초마다 갱신
 
             // setInterval() 함수를 중단
             clearInterval(setInterval);
@@ -126,21 +119,35 @@ export default {
     
     computed: {
             
-        // 모듈과 상태 필터
+        //  module & status filter : 모듈 & 상태 필터
         filteredData() {
+            // 조건문 기본값이 '' 일때 전체 All 출력
             return this.getData
-            // 조건문 selectedModule 이 all 아닐때 조건을 충족하도록 하는 and 연산자  혹은 '' 일때 전체가 보이게 하기
-            .filter(list =>list.type === this.selectedModule)              
-            .filter(list => list.state.status === this.selectedStatus)
-            // Lag 순 정렬
+            .filter(list => {
+                // Show all data if selectedModule is empty
+                if (this.selectedModule === '') {
+                return true;
+                }
+                return list.type === this.selectedModule;
+            })
+
+            .filter(list => {
+                // Show all data if selectedModule is empty
+                if (this.selectedStatus === '') {
+                return true;
+                }
+                return list.state.status === this.selectedStatus;
+            })
+            
+            // Lag asc & desc : Lag 에 따른 오름차순 & 내림차순
             .sort((a, b) => {
                 if (this.selectedLag === 'asc') {
-                    return a.state.data.lag - b.state.data.lag;
+                    return a?.state?.data?.lag - b?.state?.data?.lag;
                 } else if (this.selectedLag === 'desc') {
-                    return b.state.data.lag - a.state.data.lag;
+                    return b?.state?.data?.lag - a?.state?.data?.lag;
                 } else {
                     // 기본 정렬 방향 지정 (생략 시 오름차순)
-                    return a.state.data.lag - b.state.data.lag;
+                    return a?.state?.data?.lag - b?.state?.data?.lag;
                 }
             })
         }

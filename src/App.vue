@@ -1,15 +1,15 @@
 <template>
-  <Filter />
+  <currentTime />
   <Table />
 </template>
 
 <script>
 import Table from './components/Table.vue'
-import Filter from './components/Filter.vue'
+import currentTime from './components/currentTime.vue'
 
 export default {
   name:'App',
-  components:{Table,Filter}
+  components:{Table,currentTime}
 }
 </script>
 

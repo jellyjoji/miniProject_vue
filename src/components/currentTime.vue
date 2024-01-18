@@ -1,5 +1,5 @@
 <template>
-  <h1>time</h1>
+  <h1>currentTime</h1>
   <!-- 현재 시간 표시 -->
   <p>{{ timeFormat }}</p>
 
@@ -17,7 +17,7 @@
 
 <script>
 export default {
-    name:'time',
+    name:'currentTime',
     data(){
       return{
         currentTime: new Date(), // Date 객체로 초기화
