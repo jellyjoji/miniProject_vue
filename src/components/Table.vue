@@ -1,7 +1,7 @@
 <template>
   <h1>Table</h1>
   <!-- Filter -->
-  <!-- 모듈 필터 선택 -->
+  <!-- module filter -->
     <select v-model="selectedModule">
         <option v-for="(module, i) in modules" :key="i" :value="module.value">
             {{ module.name }}
@@ -9,12 +9,21 @@
     </select>
     <span>{{ selectedModule }} 선택</span>
 
+    <!-- status filter -->
     <select v-model="selectedStatus">
         <option v-for="(status, i) in status" :key="i" :value="status.value">
             {{ status.name }}
         </option>
     </select>
     <span>{{ selectedStatus }} 선택</span>
+
+    <!-- lag filter -->
+    <select v-model="selectedLag" >
+        <option v-for="(lag, i) in lags" :key="i" :value="lag.value">
+            {{ lag.name }}
+        </option>
+    </select>
+    <span>{{ selectedLag }} 선택</span>
 
   <!-- Data List Table -->
   <table>
@@ -25,17 +34,19 @@
     </thead>
     <tbody>
         <tr v-for="list in filteredData" :key="list.key">
+            
             <td>{{ list.key }}</td>
             <td>{{ list.agent }}</td>
             <td>{{ list.type }}</td>
             <td>{{ list.name }}</td>
-            <td>{{ list.state.data.lag }}</td>
-            <td>{{ list.state.data.last_processed_time }}</td>
-            <td>{{ list.state.status }}</td>
-            <td>{{ list.state.code }}</td>
-            <td>{{ list.state.message }}</td>
-            <td>{{ list.state.start_time }}</td>
-            <td>{{ list.state.elapsed_time }}</td>
+            <!-- state 와 data 의 값이 null 인 경우를 대비하여 .? 옵셔널 체이닝 적용 -->
+            <td>{{ list?.state?.data?.lag }}</td>
+            <td>{{ list?.state?.data.last_processed_time }}</td>
+            <td>{{ list?.state?.status }}</td>
+            <td>{{ list?.state?.code }}</td>
+            <td>{{ list?.state?.message }}</td>
+            <td>{{ list?.state?.start_time }}</td>
+            <td>{{ list?.state?.elapsed_time }}</td>
         </tr>
     </tbody>
   </table>
@@ -50,30 +61,35 @@ export default {
         return{
             getData:[],
             // Table 생성을 위한 Table column list
+            // columns:['key','agent','type','name','lag','status','code','message','start time','elapsed time'],
             columns:['key','agent','type','name','lag','last processed time','status','code','message','start time','elapsed time'],
             
             // filter 선택지
             modules:[
-                {name:'All', value:undefined},
+                {name:'All', value:''},
                 {name:'Extract', value:'Extract'},
                 {name:'Send', value:'Send'},
                 {name:'Post', value:'Post'},
             ],
             status:[
-                {name:'All', value:undefined},
+                {name:'All', value:''},
                 {name:'Running', value:'Running'},
                 {name:'Stopped', value:'Stopped'},
                 {name:'Error', value:'Error'},
             ],
+            lags:[
+                {name:'All', value:''},
+                {name:'Ascending', value:'asc'},
+                {name:'Descending', value:'desc'},
+            ],
             // filter 의 기본값
-            selectedModule:'All',
-            selectedStatus:'All',
+            selectedModule:'',
+            selectedStatus:'',
+            selectedLag:'',
+
             // fillter Data 의 초기값 
             filteredData: []
         }
-    },
-    
-    filter:{
     },
     methods:{
         // axiox 를 통한 데이터 불러오기
@@ -95,15 +111,41 @@ export default {
             });
             
             console.log("데이터가 5초마다 갱신되고 있습니다");
+            // this.filteredData = this.getData.filter(list => list.type === this.selectedModule);
+            // this.filteredData = this.getData.filter(list => list.state.status === this.selectedStatus);
+            // this.filteredData = this.getData.filter(list => list.state.data.lag === this.selectedLag);
 
-            this.filteredData = this.getData.filter(item => item.type === this.selectedModule);
 
+            }, 1000); // Execute every 5 second
 
-        }, 1000); // Execute every 5 second
+            // setInterval() 함수를 중단
+            clearInterval(setInterval);
         },
         
     },
     
+    computed: {
+            
+        // 모듈과 상태 필터
+        filteredData() {
+            return this.getData
+            // 조건문 selectedModule 이 all 아닐때 조건을 충족하도록 하는 and 연산자  혹은 '' 일때 전체가 보이게 하기
+            .filter(list =>list.type === this.selectedModule)              
+            .filter(list => list.state.status === this.selectedStatus)
+            // Lag 순 정렬
+            .sort((a, b) => {
+                if (this.selectedLag === 'asc') {
+                    return a.state.data.lag - b.state.data.lag;
+                } else if (this.selectedLag === 'desc') {
+                    return b.state.data.lag - a.state.data.lag;
+                } else {
+                    // 기본 정렬 방향 지정 (생략 시 오름차순)
+                    return a.state.data.lag - b.state.data.lag;
+                }
+            })
+        }
+    },
+
 
     created() {
     this.fetchData();
