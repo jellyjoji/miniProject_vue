@@ -1,6 +1,17 @@
 <template>
   <h1>time</h1>
+  <!-- 현재 시간 표시 -->
   <p>{{ timeFormat }}</p>
+
+  <!-- 툴팁 안내 -->
+  <div v-show="showTooltip" class="tooltip">
+    <p class="tooltiptext tooltip-top">데이터는 5초마다 갱신됩니다.</p>
+  </div>
+  <span @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    <img src="../../public/helpIcon.svg" alt="helpIcon">
+  </span>
+
+
 
 </template>
 
@@ -9,7 +20,8 @@ export default {
     name:'time',
     data(){
       return{
-        currentTime: new Date() // Date 객체로 초기화
+        currentTime: new Date(), // Date 객체로 초기화
+        showTooltip: false
       }
     },
     computed:{
@@ -33,6 +45,39 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.tooltip{
+  position: relative;
+}
+.tooltip .tooltiptext {
+  width: 120px;             /* 툴팁 영역의 넓이를 설정 */
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;       /* 절대 위치를 사용 */
+  z-index: 1;
+}
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  border-style: solid;
+  border-width: 5px;
+}
+.tooltip .tooltip-top {
+  width: 120px;
+  bottom: 150%;
+  /* 위치 조정 */
+  /* right: 10%; */
+  /* margin-left: -60px; */
+}
+
+.tooltip .tooltip-top::after {
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-color: black transparent transparent transparent;
+}
 
 </style>

@@ -1,13 +1,20 @@
 <template>
   <h1>Table</h1>
   <!-- Filter -->
-  <table>
-    <select v-model="selectedValue">
-        <option value="1">Extract</option>
-        <option value="2">Send</option>
-        <option value="3">Post</option>
+  <!-- 모듈 필터 선택 -->
+    <select v-model="selectedModule">
+        <option v-for="(module, i) in modules" :key="i" :value="module.value">
+            {{ module.name }}
+        </option>
     </select>
-  </table>
+    <span>{{ selectedModule }} 선택</span>
+
+    <select v-model="selectedStatus">
+        <option v-for="(status, i) in status" :key="i" :value="status.value">
+            {{ status.name }}
+        </option>
+    </select>
+    <span>{{ selectedStatus }} 선택</span>
 
   <!-- Data List Table -->
   <table>
@@ -17,7 +24,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-for="list in getData" :key="list.key">
+        <tr v-for="list in filteredData" :key="list.key">
             <td>{{ list.key }}</td>
             <td>{{ list.agent }}</td>
             <td>{{ list.type }}</td>
@@ -42,23 +49,62 @@ export default {
     data(){
         return{
             getData:[],
-            selectedValue:'',
             // Table 생성을 위한 Table column list
-            columns:['key','agent','type','name','lag','last processed time','status','code','message','start time','elapsed time']
+            columns:['key','agent','type','name','lag','last processed time','status','code','message','start time','elapsed time'],
+            
+            // filter 선택지
+            modules:[
+                {name:'All', value:undefined},
+                {name:'Extract', value:'Extract'},
+                {name:'Send', value:'Send'},
+                {name:'Post', value:'Post'},
+            ],
+            status:[
+                {name:'All', value:undefined},
+                {name:'Running', value:'Running'},
+                {name:'Stopped', value:'Stopped'},
+                {name:'Error', value:'Error'},
+            ],
+            // filter 의 기본값
+            selectedModule:'All',
+            selectedStatus:'All',
+            // fillter Data 의 초기값 
+            filteredData: []
         }
+    },
+    
+    filter:{
     },
     methods:{
         // axiox 를 통한 데이터 불러오기
         fetchData(){
-            axios.get('https://86927d7e-6241-470a-b535-508d30a31fa9.mock.pstmn.io/list')
+            // data 5초마다 갱신 : setInterval 5000
+            setInterval(() => {
+
+            axios.get('http://172.16.0.60:38080/api/open/module/list',{
+            headers: {
+                        'Authorization': 'Bearer dGVzdG1hbmFnZXI=',
+                },
+            })
             .then(result => {
                 this.getData = result.data.data;
             })
             .catch(error => {
                 console.error(error);
+                
             });
+            
+            console.log("데이터가 5초마다 갱신되고 있습니다");
+
+            this.filteredData = this.getData.filter(item => item.type === this.selectedModule);
+
+
+        }, 1000); // Execute every 5 second
         },
+        
     },
+    
+
     created() {
     this.fetchData();
   }
