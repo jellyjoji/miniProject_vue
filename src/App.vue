@@ -1,6 +1,8 @@
 <template>
-  <currentTime />
-  <Table />
+  <div class="container">
+    <currentTime />
+    <Table />
+  </div>
 </template>
 
 <script>
@@ -13,6 +15,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 2rem;
+}
 </style>

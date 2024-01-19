@@ -1,18 +1,17 @@
 <template>
-  <h1>currentTime</h1>
-  <!-- 현재 시간 표시 -->
-  <p>{{ timeFormat }}</p>
+  <div class="currentTime" aria-label="currentTime">
+    <!-- 현재 시간 표시 -->
+    <p class="timeFormat">{{ timeFormat }}</p>
 
-  <!-- 툴팁 안내 -->
-  <div v-show="showTooltip" class="tooltip">
-    <p class="tooltiptext tooltip-top">데이터는 5초마다 갱신됩니다.</p>
+    <!-- 툴팁 안내 -->
+    <div v-show="showTooltip" class="tooltip">
+      <p class="tooltiptext tooltip-top">데이터는 5초마다 갱신됩니다.</p>
+    </div>
+    <span @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+      <img src="../../public/helpIcon.svg" alt="helpIcon">
+    </span>
+
   </div>
-  <span @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <img src="../../public/helpIcon.svg" alt="helpIcon">
-  </span>
-
-
-
 </template>
 
 <script>
@@ -78,6 +77,16 @@ export default {
   left: 50%;
   margin-left: -5px;
   border-color: black transparent transparent transparent;
+}
+.currentTime{
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  gap: 0.5rem;
+
+}
+.timeFormat{
+  margin-bottom: 0.3rem;
 }
 
 </style>
