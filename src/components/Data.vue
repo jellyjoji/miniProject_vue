@@ -9,7 +9,7 @@
       </thead>
       <tbody class="tbody">
         <tr v-for="list in getData" :key="list.key">
-          <td>{{ list.key }}</td>
+          <!-- <td>{{ list.key }}</td> -->
           <td>{{ list.agent }}</td>
           <td>{{ list.type }}</td>
           <td>{{ list.name }}</td>
@@ -37,7 +37,7 @@ export default {
       getData: [],
       // Table 생성을 위한 Table column list
       columns: [
-        "key",
+        // "key",
         "agent",
         "type",
         "name",
