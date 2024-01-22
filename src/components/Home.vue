@@ -70,10 +70,10 @@
 </template>
 
 <script>
-import axios from "axios";
+import fetchData from "../assets/fetchData.js";
 
 export default {
-  name: "Table",
+  name: "Home",
   data() {
     return {
       getData: [],
@@ -122,30 +122,19 @@ export default {
   },
   methods: {
     // axiox 를 통한 데이터 불러오기
-    fetchData() {
+    async fetchData() {
       // js 로 분류해서 promise aync await 으로 받기
-      setInterval(() => {
-        axios
-          .get("http://172.16.0.60:38080/api/open/module/list", {
-            headers: {
-              Authorization: "Bearer dGVzdG1hbmFnZXI=",
-            },
-          })
-          .then((result) => {
-            this.getData = result.data.data;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-
-        console.log("데이터가 5초마다 갱신되고 있습니다");
-      }, 3000); // 데이터는 5초마다 갱신
+      this.getData = (await fetchData()).data.data;
     },
   },
 
   computed: {
     //  module & status filter : 모듈 & 상태 필터
     filteredData() {
+      if (!Array.isArray(this.getData)) {
+        console.log(Array);
+        return [];
+      }
       // 조건문 기본값이 '' 일때 전체 All 출력
       return (
         this.getData
@@ -194,11 +183,13 @@ export default {
     this.fetchData();
   },
 
-  // get current time in realtime
+  // get currenTime every 5 second
   mounted() {
     setInterval(() => {
       this.currentTime = new Date();
-    }, 1000);
+      this.filteredData;
+      console.log("데이터가 5초마다 갱신되고 있습니다");
+    }, 3000);
   },
 };
 </script>
@@ -206,7 +197,7 @@ export default {
 <style scoped>
 .table {
   border: 1px solid gray;
-  text-wrap: nowrap;
+  overflow-wrap: break-word;
 }
 .thead {
   background-color: gray;

@@ -1,15 +1,14 @@
 <template>
   <div class="container">
-    <Table />
+    <router-link to="/">Home</router-link>
+    <router-link to="/data">Data</router-link>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Table from "./components/Table.vue";
-
 export default {
   name: "App",
-  components: { Table },
 };
 </script>
 
