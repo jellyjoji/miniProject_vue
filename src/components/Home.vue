@@ -1,36 +1,42 @@
 <template>
   <div class="currentTime" aria-label="currentTime">
     <!-- 현재 시간 표시 -->
-    <p class="timeFormat">{{ timeFormat }}</p>
+    <p
+      class="timeFormat"
+      @mouseover="showTooltip = true"
+      @mouseleave="showTooltip = false"
+    >
+      {{ timeFormat }}
+    </p>
 
     <!-- 툴팁 안내 -->
     <div v-show="showTooltip" class="tooltip">
       <p class="tooltiptext tooltip-top">데이터는 5초마다 갱신됩니다.</p>
     </div>
-    <span @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-      <img src="../../public/helpIcon.svg" alt="helpIcon" />
-    </span>
   </div>
 
   <div>
     <div class="filter" aria-label="filter options">
       <!-- Filter -->
       <!-- module filter -->
-      <select v-model="selectedModule">
+      <label for="selectedModule">모듈</label>
+      <select v-model="selectedModule" id="selectedModule">
         <option v-for="(module, i) in modules" :key="i" :value="module.value">
           {{ module.name }}
         </option>
       </select>
 
       <!-- status filter -->
-      <select v-model="selectedStatus">
+      <label for="selectedStatus">타입</label>
+      <select v-model="selectedStatus" id="selectedStatus">
         <option v-for="(status, i) in status" :key="i" :value="status.value">
           {{ status.name }}
         </option>
       </select>
 
       <!-- lag filter -->
-      <select v-model="selectedLag">
+      <label for="selectedLag">Lag</label>
+      <select v-model="selectedLag" id="selectedLag">
         <option v-for="(lag, i) in lags" :key="i" :value="lag.value">
           {{ lag.name }}
         </option>
@@ -38,7 +44,7 @@
 
       <!-- 선택된 filter 값을 출력 -->
       <span>
-        필터 : {{ selectedModule }} {{ selectedStatus }} {{ selectedLag }}
+        선택 : {{ selectedModule }} {{ selectedStatus }} {{ selectedLag }}
       </span>
     </div>
 
@@ -195,6 +201,7 @@ export default {
 </script>
 
 <style scoped>
+/* filter */
 .filter {
   display: flex;
   align-items: center;
@@ -206,9 +213,10 @@ select {
   border-radius: 5px;
   cursor: pointer;
 }
-/* currentTime */
+/* toolTip */
 .tooltip {
   position: relative;
+  transition: 0.3s;
 }
 .tooltip .tooltiptext {
   width: 120px; /* 툴팁 영역의 넓이를 설정 */
@@ -219,6 +227,7 @@ select {
   padding: 5px 0;
   position: absolute; /* 절대 위치를 사용 */
   z-index: 1;
+  margin-bottom: 25px;
 }
 .tooltip .tooltiptext::after {
   content: " ";
@@ -230,7 +239,7 @@ select {
   width: 120px;
   bottom: 150%;
   /* 위치 조정 */
-  /* right: 10%; */
+  right: 10%;
   /* margin-left: -60px; */
 }
 
@@ -240,6 +249,7 @@ select {
   margin-left: -5px;
   border-color: black transparent transparent transparent;
 }
+/* currentTime */
 .currentTime {
   display: flex;
   align-items: center;
@@ -248,5 +258,12 @@ select {
 }
 .timeFormat {
   margin-bottom: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+.timeFormat:hover {
+  background-color: #ebebeb;
+  cursor: pointer;
 }
 </style>
