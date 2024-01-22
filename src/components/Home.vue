@@ -195,20 +195,6 @@ export default {
 </script>
 
 <style scoped>
-.table {
-  border: 1px solid gray;
-  overflow-wrap: break-word;
-}
-.thead {
-  background-color: gray;
-  color: white;
-}
-.thead tr th {
-  padding: 0.5rem 1rem;
-}
-.tbody tr td {
-  padding: 0.5rem 1rem;
-}
 .filter {
   display: flex;
   align-items: center;
