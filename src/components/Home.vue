@@ -21,7 +21,7 @@
       </select>
 
       <!-- status filter -->
-      <label for="selectedStatus">타입</label>
+      <label for="selectedStatus">상태</label>
       <select v-model="selectedStatus" id="selectedStatus">
         <option v-for="(status, i) in status" :key="i" :value="status.value">
           {{ status.name }}
@@ -51,16 +51,12 @@
       </thead>
       <tbody class="tbody">
         <tr v-for="list in filteredData" :key="list.key">
-          <!-- <td>{{ list.key }}</td> -->
-          <td>{{ list.agent }}</td>
           <td>{{ list.type }}</td>
           <td>{{ list.name }}</td>
           <!-- state 와 data 의 값이 null 인 경우를 대비하여 .? 옵셔널 체이닝 적용 -->
           <td>{{ list?.state?.data?.lag }}</td>
           <td>{{ list?.state?.data?.last_processed_time }}</td>
           <td>{{ list?.state?.status }}</td>
-          <td>{{ list?.state?.code }}</td>
-          <td>{{ list?.state?.message }}</td>
           <td>{{ list?.state?.start_time }}</td>
           <td>{{ list?.state?.elapsed_time }}</td>
         </tr>
@@ -79,15 +75,11 @@ export default {
       getData: [],
       // Table 생성을 위한 Table column list
       columns: [
-        // "key",
-        "agent",
         "type",
         "name",
         "lag",
         "last processed time",
         "status",
-        "code",
-        "message",
         "start time",
         "elapsed time",
       ],
@@ -157,11 +149,15 @@ export default {
           // Lag asc & desc : Lag 에 따른 오름차순 & 내림차순
           .sort((a, b) => {
             if (this.selectedLag === "asc") {
+              console.log("1");
               return a?.state?.data?.lag - b?.state?.data?.lag;
             } else if (this.selectedLag === "desc") {
+              console.log("2");
               return b?.state?.data?.lag - a?.state?.data?.lag;
             } else {
-              // 기본 정렬 방향 지정 (생략 시 오름차순)
+              // 기본 정렬 방향 지정 : 현재 순서대로 유지
+              console.log("0");
+
               return 0;
             }
           })

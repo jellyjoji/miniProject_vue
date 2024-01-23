@@ -9,16 +9,12 @@
       </thead>
       <tbody class="tbody">
         <tr v-for="list in getData" :key="list.key">
-          <!-- <td>{{ list.key }}</td> -->
-          <td>{{ list.agent }}</td>
           <td>{{ list.type }}</td>
           <td>{{ list.name }}</td>
           <!-- state 와 data 의 값이 null 인 경우를 대비하여 .? 옵셔널 체이닝 적용 -->
           <td>{{ list?.state?.data?.lag }}</td>
           <td>{{ list?.state?.data?.last_processed_time }}</td>
           <td>{{ list?.state?.status }}</td>
-          <td>{{ list?.state?.code }}</td>
-          <td>{{ list?.state?.message }}</td>
           <td>{{ list?.state?.start_time }}</td>
           <td>{{ list?.state?.elapsed_time }}</td>
         </tr>
@@ -37,15 +33,11 @@ export default {
       getData: [],
       // Table 생성을 위한 Table column list
       columns: [
-        // "key",
-        "agent",
         "type",
         "name",
         "lag",
         "last processed time",
         "status",
-        "code",
-        "message",
         "start time",
         "elapsed time",
       ],
