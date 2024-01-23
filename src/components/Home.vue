@@ -149,15 +149,27 @@ export default {
           // Lag asc & desc : Lag 에 따른 오름차순 & 내림차순
           .sort((a, b) => {
             if (this.selectedLag === "asc") {
-              console.log("1");
-              return a?.state?.data?.lag - b?.state?.data?.lag;
+              if (
+                a?.state?.data?.lag !== undefined &&
+                b?.state?.data?.lag !== undefined
+              ) {
+                // `a`와 `b` 모두에 "lag" 속성이 있는 경우 비교
+                return a?.state?.data?.lag - b?.state?.data?.lag;
+              } else {
+                // `a` 또는 `b` 중 하나에 "lag" 속성이 없는 경우 "lag" 속성이 있는 항목을 우선시
+                return a?.state?.data?.lag !== undefined ? -1 : 1;
+              }
             } else if (this.selectedLag === "desc") {
-              console.log("2");
-              return b?.state?.data?.lag - a?.state?.data?.lag;
+              if (
+                a?.state?.data?.lag !== undefined &&
+                b?.state?.data?.lag !== undefined
+              ) {
+                return b?.state?.data?.lag - a?.state?.data?.lag;
+              } else {
+                return a?.state?.data?.lag !== undefined ? 1 : -1;
+              }
             } else {
-              // 기본 정렬 방향 지정 : 현재 순서대로 유지
-              console.log("0");
-
+              // 기본 정렬: 현재 순서 유지
               return 0;
             }
           })
