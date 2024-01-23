@@ -113,9 +113,9 @@ export default {
     };
   },
   methods: {
-    // axiox 를 통한 데이터 불러오기
+    // axios 를 통한 데이터 불러오기
     async fetchData() {
-      // js 로 분류해서 promise aync await 으로 받기
+      // js 로 분류해서 promise async await 으로 받기
       this.getData = (await fetchData()).data.data;
     },
   },
